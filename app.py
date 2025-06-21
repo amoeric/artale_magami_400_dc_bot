@@ -63,8 +63,7 @@ async def on_message(message):
     
     # 只有在被@的時候才回應
     if not bot.user.mentioned_in(message):
-        # 仍然處理命令（如 !goddess）
-        await bot.process_commands(message)
+        # 完全忽略沒有@的訊息
         return
     
     content = message.content.strip()
@@ -153,9 +152,6 @@ async def on_message(message):
     if content.lower() not in ['幫助', 'help', '帮助']:
         await message.channel.send(help_text)
         return
-    
-    # 處理其他命令
-    await bot.process_commands(message)
 
 def calculate_result(input_code):
     """
@@ -176,41 +172,7 @@ def calculate_result(input_code):
         else:
             return None
 
-@bot.command(name='goddess', aliases=['女神'])
-async def goddess_command(ctx, *, code=None):
-    """
-    命令版本的女神400速解
-    使用方法: !goddess 1102 或 !女神 1102
-    """
-    if code is None:
-        await ctx.send("請輸入1-4位數字，例如：`!goddess 1102`")
-        return
-    
-    code = code.strip()
-    if not re.match(r'^[0-3]{1,4}$', code):
-        await ctx.send("請輸入有效的1-4位數字（只能包含 0-3）")
-        return
-    
-    result = calculate_result(code)
-    
-    embed = discord.Embed(title="女神400速解", color=0x3b82f6)
-    
-    if len(code) == 4:
-        if result:
-            embed.add_field(name=f"輸入：{code}", value=f"**答案：{result}**", inline=False)
-            embed.color = 0x10b981
-        else:
-            embed.add_field(name=f"輸入：{code}", value="❌ 無對應結果", inline=False)
-            embed.color = 0xef4444
-    else:
-        if result:
-            embed.add_field(name=f"部分輸入：{code}", value=f"可能結果：**{result}**", inline=False)
-            embed.color = 0xf59e0b
-        else:
-            embed.add_field(name=f"部分輸入：{code}", value="❌ 無可能結果", inline=False)
-            embed.color = 0xef4444
-    
-    await ctx.send(embed=embed)
+# 已移除命令功能，只保留@機器人的回應方式
 
 def run_bot():
     """在單獨的線程中運行機器人"""
