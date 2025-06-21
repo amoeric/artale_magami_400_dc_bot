@@ -148,10 +148,8 @@ async def on_message(message):
         await message.channel.send(embed=embed)
         return
     
-    # 如果輸入的不是有效數字，顯示幫助
-    if content.lower() not in ['幫助', 'help', '帮助']:
-        await message.channel.send(help_text)
-        return
+    # 其他情況顯示幫助
+    await message.channel.send(help_text)
 
 def calculate_result(input_code):
     """
