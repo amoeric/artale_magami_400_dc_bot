@@ -63,9 +63,16 @@ async def on_message(message):
     
     content = message.content.strip()
     
-    # 幫助命令
-    if content.lower() in ['幫助', 'help', '帮助']:
-        help_text = """
+    # 處理被@的情況，提取實際的命令內容
+    if bot.user.mentioned_in(message):
+        # 移除所有mention標籤，只保留實際內容
+        content = re.sub(r'<@!?\d+>', '', content).strip()
+    
+    # 如果內容為空（只有mention），顯示幫助
+    if not content:
+        content = 'help'
+    
+    help_text = """
 🎮 **女神400速解 - 使用說明**
 
 **使用方法：**
@@ -86,7 +93,10 @@ async def on_message(message):
 • 3 = 隊長在右
 
 祝你遊戲愉快！ 🎉
-        """
+    """
+    
+    # 幫助命令
+    if content.lower() in ['幫助', 'help', '帮助']:
         await message.channel.send(help_text)
         return
     
@@ -132,6 +142,12 @@ async def on_message(message):
                 embed.color = 0xef4444  # 紅色
         
         await message.channel.send(embed=embed)
+        return
+    
+    # 如果輸入的不是有效數字且被@了或包含數字，顯示幫助
+    if (bot.user.mentioned_in(message) or re.search(r'\d', content)) and content.lower() not in ['幫助', 'help', '帮助']:
+        await message.channel.send(help_text)
+        return
     
     # 處理其他命令
     await bot.process_commands(message)
